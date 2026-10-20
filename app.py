@@ -1,0 +1,46 @@
+# namepet feed play  sleep train quit q
+# hunger / 10 energy /15 happiness /20 mood /20
+import random
+
+def change(nameofthing, thingtochange, max, randparameters):
+    og = thingtochange
+    amtincreased = random.randint(randparameters[0], randparameters[1]) + randparameters[2]
+    thingtochange += amtincreased
+    if thingtochange > max:
+        thingtochange = max
+        amtincreased = max - og
+    final = amtincreased + og
+    print(nameofthing + " increased by " + str(amtincreased) + " and is now " + str(final))
+    return final
+
+class Pet:
+    def __init__(self, name, hunger, energy, happiness, mood):
+        self.name = name
+        self.hunger = hunger
+        self.energy = energy
+        self.happiness = happiness
+        self.mood = mood
+
+    def feed(self): # only working one (precedent)
+        hunger = change("hunger", self.hunger, 10, [1, 3, 2])
+        self.hunger = hunger
+
+    def play(self):
+        energy = change(self.energy, 15, [0, 0, 2])
+        self.energy += energy
+        print("energy increased by " + str(energy) + " and is now " + str(self.energy))
+
+        happiness = change(self.happiness, 20, [0, 0, 2])
+        self.happiness += happiness
+        print("energy increased by " + str(happiness) + " and is now " + str(self.happiness))
+
+    def sleep(self):
+        energy = change(self.energy, 15, [0, 0, 2])
+        self.energy += energy
+        print("energy increased by " + str(energy) + " and is now " + str(self.energy))
+
+
+
+
+pet = Pet("bob", 5, 1, 1, 1)
+pet.feed()
