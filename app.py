@@ -10,7 +10,12 @@ def change(nameofthing, thingtochange, max, randparameters):
         thingtochange = max
         amtincreased = max - og
     final = amtincreased + og
-    print(nameofthing + " increased by " + str(amtincreased) + " and is now " + str(final))
+    increaseordecrease = ""
+    if amtincreased < 0:
+        increaseordecrease = " decreased by "
+    else:
+        increaseordecrease = " increased by "
+    print(nameofthing + increaseordecrease + str(amtincreased) + " and is now " + str(final))
     return final
 
 class Pet:
@@ -22,25 +27,18 @@ class Pet:
         self.mood = mood
 
     def feed(self): # only working one (precedent)
-        hunger = change("hunger", self.hunger, 10, [1, 3, 2])
-        self.hunger = hunger
+        self.hunger = change("hunger", self.hunger, 10, [1, 3, 2])
 
     def play(self):
-        energy = change(self.energy, 15, [0, 0, 2])
-        self.energy += energy
-        print("energy increased by " + str(energy) + " and is now " + str(self.energy))
-
-        happiness = change(self.happiness, 20, [0, 0, 2])
-        self.happiness += happiness
-        print("energy increased by " + str(happiness) + " and is now " + str(self.happiness))
+        self.energy = change("energy", self.energy, 15, [0, 0, -2])
+        self.happiness = change("happiness", self.happiness, 20, [0, 0, 2])
 
     def sleep(self):
-        energy = change(self.energy, 15, [0, 0, 2])
-        self.energy += energy
-        print("energy increased by " + str(energy) + " and is now " + str(self.energy))
+        self.energy = change("energy", self.energy, 15, [0, 0, 2])
 
 
 
 
 pet = Pet("bob", 5, 1, 1, 1)
 pet.feed()
+pet.play()
