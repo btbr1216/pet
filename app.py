@@ -20,6 +20,16 @@ def change(nameofthing, thingtochange, max, randparameters):
     print(nameofthing + increaseordecrease + str(amtincreased) + " and is now " + str(final))
     return final
 
+def functionforgradualloss(value, secondvaluejustpassing):
+    wasoriginallyzero = False
+    if value == 0:
+        wasoriginallyzero = True
+    value -= 1
+    if value <= 0:
+        return [secondvaluejustpassing, 0, wasoriginallyzero]
+    else:
+        return [secondvaluejustpassing, value, wasoriginallyzero]
+
 class Pet:
     def __init__(self, name, hunger, energy, happiness, mood):
         self.name = name
@@ -51,47 +61,69 @@ class Pet:
 
     def decreasesomething(self, whichone):
         if whichone == 0:
-            self.hunger -= 1
-            return ["hunger", self.hunger]
+            infolist = functionforgradualloss(self.hunger, "hunger")
+            self.hunger = infolist(self.hunger)[1]
+            return infolist
         elif whichone == 1:
-            self.energy -= 1
-            return ["energy", self.energy]
+            infolist = functionforgradualloss(self.energy, "energy")
+            self.energy = infolist[1]
+            return infolist
         elif whichone == 2:
-            self.happiness -= 1
-            return ["happiness", self.happiness]
+            infolist = functionforgradualloss(self.happiness, "happiness")
+            self.happiness = infolist[1]
+            return infolist
         elif whichone == 3:
-            self.mood -= 1
-            return ["mood", self.mood]
-
+            infolist = functionforgradualloss(self.mood, "mood")
+            self.mood = infolist[1]
+            return infolist
 name = input("Name your pet: ")
-pet = Pet(name, 5, 1, 1, 1)
+pet = Pet(name, 3, 3, 3, 3)
+
+outoflist = {
+    "hunger": "/10",
+    "energy": "/15",
+    "happiness": "/20",
+    "mood": "/20"
+}
 
 from threading import Thread
 from time import sleep
 import random
 
-for i in range(4):
-    def decreaseloop():
-        num = i
-        while True:
-            if random.randint(1, 10) == 1:
-                thinglost = pet.decreasesomething(num)
-                print(name + " lost 1 " + thinglost[0] + " and now has " + str(thinglost[1]) + " " + thinglost[0])
-            sleep(2)
-    sleep(random.randint(1, 2))
+deathdeterminerfromgradualloss = False
+
+def forloop():
+    for i in range(4): # put this in a thread too it delays starting
+        def decreaseloop():
+            num = i
+            while True:
+                if random.randint(1, 10) == 1:
+                    infolist = pet.decreasesomething(num)
+                    decreasedby = "1"
+                    if infolist[2]:
+                        decreasedby = "0"
+                    print(name + " lost " + decreasedby + " " + infolist[0] + " and now has " + str(infolist[1]) + outoflist[infolist[0]] + " " + infolist[0])
+                    if infolist[1] == 0:
+                        print(name + " died")
+                sleep(2)
+        sleep(random.randint(1, 2))
         
     t = Thread(target=decreaseloop)
     t.start()
 
+t = Thread(target=forloop)
+t.start()
 
 while True:
+    if deathdeterminerfromgradualloss:
+        break
     print("[1] feed")
     print("[2] play")
     print("[3] sleep")
     print("[4] train")
     print("[q] quit")
     for i in pet.getstats():
-        print(name + " has " + str(i[0]) + " " + i[1])
+        print(name + " has " + str(i[0]) + outoflist[i[1]] + " " + i[1])
     choice = input("input: ")
     death = False
     if choice == "1":
