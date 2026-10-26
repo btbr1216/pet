@@ -62,7 +62,7 @@ class Pet:
     def decreasesomething(self, whichone):
         if whichone == 0:
             infolist = functionforgradualloss(self.hunger, "hunger")
-            self.hunger = infolist(self.hunger)[1]
+            self.hunger = infolist[1]
             return infolist
         elif whichone == 1:
             infolist = functionforgradualloss(self.energy, "energy")
@@ -77,7 +77,7 @@ class Pet:
             self.mood = infolist[1]
             return infolist
 name = input("Name your pet: ")
-pet = Pet(name, 3, 3, 3, 3)
+pet = Pet(name, 10, 15, 20, 20)
 
 outoflist = {
     "hunger": "/10",
@@ -93,10 +93,13 @@ import random
 deathdeterminerfromgradualloss = False
 
 def forloop():
-    for i in range(4): # put this in a thread too it delays starting
+    for i in range(4):
         def decreaseloop():
             num = i
             while True:
+                global deathdeterminerfromgradualloss
+                if deathdeterminerfromgradualloss:
+                    break
                 if random.randint(1, 10) == 1:
                     infolist = pet.decreasesomething(num)
                     decreasedby = "1"
@@ -105,11 +108,12 @@ def forloop():
                     print(name + " lost " + decreasedby + " " + infolist[0] + " and now has " + str(infolist[1]) + outoflist[infolist[0]] + " " + infolist[0])
                     if infolist[1] == 0:
                         print(name + " died")
+                        deathdeterminerfromgradualloss = True
+                        break
                 sleep(2)
-        sleep(random.randint(1, 2))
-        
-    t = Thread(target=decreaseloop)
-    t.start()
+        t = Thread(target=decreaseloop)
+        t.start()
+    sleep(random.randint(1, 2))
 
 t = Thread(target=forloop)
 t.start()
@@ -125,6 +129,8 @@ while True:
     for i in pet.getstats():
         print(name + " has " + str(i[0]) + outoflist[i[1]] + " " + i[1])
     choice = input("input: ")
+    if deathdeterminerfromgradualloss:
+        break
     death = False
     if choice == "1":
         death = pet.feed()
@@ -140,3 +146,4 @@ while True:
     if death:
         print(name + " died")
         break
+
